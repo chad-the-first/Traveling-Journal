@@ -1,0 +1,10 @@
+.trip {
+  height: 350px;
+  min-width: 150px;
+  transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.trip:hover {
+  box-shadow: 9px 19px 26px -1px rgba(0, 0, 0, 0.31);
+}

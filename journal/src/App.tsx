@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Trip as TripModel } from "./models/trip";
 import Trips from "./components/Trips";
+import { Col, Container, Row } from "react-bootstrap";
+import styles from "./styles/TripsPage.module.css";
 
 function App() {
   const [trips, setTrips] = useState<TripModel[]>([]);
@@ -22,11 +24,15 @@ function App() {
   }, []);
 
   return (
-    <div>
-      {trips.map((trip) => (
-        <Trips trip={trip} key={trip._id} />
-      ))}
-    </div>
+    <Container>
+      <Row xs={1} md={2} lg={4} className="g-4">
+        {trips.map((trip) => (
+          <Col key={trip._id}>
+            <Trips trip={trip} className={styles.trip} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
   );
 }
 
