@@ -9,4 +9,8 @@ router.get("/:tripId", TripsController.getTrip);
 
 router.post("/", TripsController.createTrip);
 
+router.patch("/:tripId", TripsController.updateTrip);
+
+router.delete("/:tripId", TripsController.deleteTrip);
+
 export default router;
