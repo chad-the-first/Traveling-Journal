@@ -1,22 +1,31 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import React, { useEffect, useState } from "react";
+import { Trip as TripModel } from "./models/trip";
+import Trips from "./components/Trips";
 
 function App() {
+  const [trips, setTrips] = useState<TripModel[]>([]);
+
+  useEffect(() => {
+    async function loadTrips() {
+      try {
+        const res = await fetch("/api/trips", {
+          method: "GET",
+        });
+        const trips = await res.json();
+        setTrips(trips);
+      } catch (error) {
+        console.error(error);
+        alert(error);
+      }
+    }
+    loadTrips();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Welcome to my traveling journal</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {trips.map((trip) => (
+        <Trips trip={trip} key={trip._id} />
+      ))}
     </div>
   );
 }
