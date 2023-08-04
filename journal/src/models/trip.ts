@@ -3,7 +3,7 @@ export interface Trip {
     title: string,
     body: string,
     author?: string,
-    meta: object,
+    meta?: object,
     createdAt: string,
     updatedAt: string,
 }
