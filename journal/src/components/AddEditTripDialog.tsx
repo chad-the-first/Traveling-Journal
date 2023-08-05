@@ -5,21 +5,37 @@ import { TripInput } from "../network/trips_api";
 import * as TripsApi from "../network/trips_api";
 
 interface props {
+  tripToEdit?: Trip;
   onDismiss: () => void;
   onTripSubmited: (trip: Trip) => void;
 }
 
-const AddTripDialog = ({ onDismiss, onTripSubmited }: props) => {
+const AddEditTripDialog = ({
+  tripToEdit,
+  onDismiss,
+  onTripSubmited,
+}: props) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<TripInput>();
+  } = useForm<TripInput>({
+    defaultValues: {
+      title: tripToEdit?.title || "",
+      body: tripToEdit?.body || "",
+      author: tripToEdit?.author || "",
+    },
+  });
 
   async function onSubmit(input: TripInput) {
     try {
-      const res = await TripsApi.createTrip(input);
-      onTripSubmited(res);
+      if (tripToEdit) {
+        const res = await TripsApi.updateTrip(tripToEdit._id, input);
+        onTripSubmited(res);
+      } else {
+        const res = await TripsApi.createTrip(input);
+        onTripSubmited(res);
+      }
     } catch (error) {
       console.error(error);
       alert(error);
@@ -29,7 +45,9 @@ const AddTripDialog = ({ onDismiss, onTripSubmited }: props) => {
   return (
     <Modal show onHide={onDismiss}>
       <Modal.Header closeButton>
-        <Modal.Title>Add a destination</Modal.Title>
+        <Modal.Title>
+          {tripToEdit ? "Edit your destination" : "Add a destination"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form id="addTripForm" onSubmit={handleSubmit(onSubmit)}>
@@ -83,4 +101,4 @@ const AddTripDialog = ({ onDismiss, onTripSubmited }: props) => {
   );
 };
 
-export default AddTripDialog;
+export default AddEditTripDialog;
