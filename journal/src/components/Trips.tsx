@@ -2,21 +2,14 @@ import styles from "../styles/Trip.module.css";
 import { Card } from "react-bootstrap";
 import { Trip as TripModel } from "../models/trip";
 import { formatDate } from "../utils/formatDate";
-import { MdDelete } from "react-icons/md";
 
 interface props {
   trip: TripModel;
   onTripClicked: (trip: TripModel) => void;
   className?: string;
-  onDeleteTripClicked: (trip: TripModel) => void;
 }
 
-const Trips = ({
-  onTripClicked,
-  trip,
-  className,
-  onDeleteTripClicked,
-}: props) => {
+const Trips = ({ onTripClicked, trip, className }: props) => {
   const { title, body, author, meta, createdAt, updatedAt } = trip;
 
   let createdUpdatedText: string;
@@ -33,16 +26,7 @@ const Trips = ({
     >
       <Card.Img variant="top" src="https://placehold.co/400x200" />
       <Card.Body className={styles.cardBody}>
-        <Card.Title>
-          {title}
-          <MdDelete
-            className="text-muted float-end"
-            onClick={(e) => {
-              onDeleteTripClicked(trip);
-              e.stopPropagation();
-            }}
-          />
-        </Card.Title>
+        <Card.Title>{title}</Card.Title>
         <Card.Text className={styles.cardText}>{body}</Card.Text>
       </Card.Body>
       <Card.Footer>

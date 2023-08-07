@@ -7,6 +7,15 @@
 .flexCenter {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 4px;
+}
+
+.deleteButton {
+  fill: crimson;
+}
+
+.deleteButton:hover {
+  cursor: pointer;
+  opacity: 0.7;
 }

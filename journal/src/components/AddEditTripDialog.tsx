@@ -1,19 +1,23 @@
 import { Button, Form, Modal } from "react-bootstrap";
-import { Trip } from "../models/trip";
+import { Trip as TripModel } from "../models/trip";
 import { useForm } from "react-hook-form";
 import { TripInput } from "../network/trips_api";
 import * as TripsApi from "../network/trips_api";
+import { MdDelete } from "react-icons/md";
+import styleUtils from "../styles/utils.module.css";
 
 interface props {
-  tripToEdit?: Trip;
+  tripToEdit?: TripModel;
   onDismiss: () => void;
-  onTripSubmited: (trip: Trip) => void;
+  onTripSubmited: (trip: TripModel) => void;
+  onDeleteTripClicked: (trip: TripModel) => void;
 }
 
 const AddEditTripDialog = ({
   tripToEdit,
   onDismiss,
   onTripSubmited,
+  onDeleteTripClicked,
 }: props) => {
   const {
     register,
@@ -87,7 +91,17 @@ const AddEditTripDialog = ({
           </Form.Group>
         </Form>
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className={styleUtils.flexCenter}>
+        {tripToEdit && (
+          <MdDelete
+            size={30}
+            className={`text-muted ${styleUtils.deleteButton}`}
+            onClick={(e) => {
+              onDeleteTripClicked(tripToEdit);
+              // e.stopPropagation();
+            }}
+          />
+        )}
         <Button
           type="submit"
           form="addTripForm"

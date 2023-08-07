@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Trip, Trip as TripModel } from "./models/trip";
 import Trips from "./components/Trips";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import styles from "./styles/TripsPage.module.css";
 import stylesUtils from "./styles/utils.module.css";
 import * as TripsApi from "./network/trips_api";
@@ -12,15 +12,21 @@ function App() {
   const [trips, setTrips] = useState<TripModel[]>([]);
   const [showAddTripDialog, setShowAddTripDialog] = useState(false);
   const [tripToEdit, setTripToEdit] = useState<TripModel | null>(null);
+  const [tripsLoading, setTripsLoading] = useState(true);
+  const [showTripsLoadingError, setShowTripsLoadingError] = useState(false);
 
   useEffect(() => {
     async function loadTrips() {
       try {
+        setShowTripsLoadingError(false);
+        setTripsLoading(true);
         const trips = await TripsApi.fetchTrips();
         setTrips(trips);
       } catch (error) {
         console.error(error);
-        alert(error);
+        setShowTripsLoadingError(true);
+      } finally {
+        setTripsLoading(false);
       }
     }
     loadTrips();
@@ -30,15 +36,30 @@ function App() {
     try {
       await TripsApi.deleteTrip(trip._id);
       setTrips(trips.filter((existingTrip) => existingTrip._id !== trip._id));
+      setTripToEdit(null);
     } catch (error) {
       console.error(error);
       alert(error);
     }
   }
 
+  const tripsGrid = (
+    <Row xs={1} md={2} lg={4} className={`g-4 ${styles.tripGrid}`}>
+      {trips.map((trip) => (
+        <Col key={trip._id}>
+          <Trips
+            trip={trip}
+            className={styles.trip}
+            onTripClicked={(trip) => setTripToEdit(trip)}
+          />
+        </Col>
+      ))}
+    </Row>
+  );
+
   return (
     <>
-      <Container>
+      <Container className={styles.tripsPage}>
         <Button
           className={`mt-4 mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
           onClick={() => setShowAddTripDialog(true)}
@@ -46,21 +67,26 @@ function App() {
           <FaPlus />
           Add a destination
         </Button>
-        <Row xs={1} md={2} lg={4} className="g-4">
-          {trips.map((trip) => (
-            <Col key={trip._id}>
-              <Trips
-                trip={trip}
-                className={styles.trip}
-                onDeleteTripClicked={deleteTrip}
-                onTripClicked={(trip) => setTripToEdit(trip)}
-              />
-            </Col>
-          ))}
-        </Row>
+
+        {tripsLoading && <Spinner animation="border" variant="primary" />}
+        {showTripsLoadingError && (
+          <p>Something went wrong. Please refresh the page.</p>
+        )}
+
+        {!tripsLoading && !showTripsLoadingError && (
+          <>
+            {trips.length > 0 ? (
+              tripsGrid
+            ) : (
+              <p>You have no destinations yet.</p>
+            )}
+          </>
+        )}
+
         {showAddTripDialog && (
           <AddEditTripDialog
             onDismiss={() => setShowAddTripDialog(false)}
+            onDeleteTripClicked={deleteTrip}
             onTripSubmited={(newTrip) => {
               setTrips([...trips, newTrip]);
               setShowAddTripDialog(false);
@@ -70,6 +96,7 @@ function App() {
         {tripToEdit && (
           <AddEditTripDialog
             onDismiss={() => setTripToEdit(null)}
+            onDeleteTripClicked={deleteTrip}
             tripToEdit={tripToEdit}
             onTripSubmited={(updatedTrip) => {
               setTrips(
