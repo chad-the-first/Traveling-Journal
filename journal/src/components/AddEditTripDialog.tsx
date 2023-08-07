@@ -5,6 +5,7 @@ import { TripInput } from "../network/trips_api";
 import * as TripsApi from "../network/trips_api";
 import { MdDelete } from "react-icons/md";
 import styleUtils from "../styles/utils.module.css";
+import TextInputField from "./form/TextInputField";
 
 interface props {
   tripToEdit?: TripModel;
@@ -55,40 +56,33 @@ const AddEditTripDialog = ({
       </Modal.Header>
       <Modal.Body>
         <Form id="addTripForm" onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
-            <Form.Label>Destination name:</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Destination name"
-              autoFocus
-              isInvalid={!!errors.title}
-              {...register("title", { required: "Required" })}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.title?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Your experience there</Form.Label>
-            <Form.Control
-              as="textarea"
-              placeholder="Your experience"
-              isInvalid={!!errors.body}
-              rows={5}
-              {...register("body", { required: "Required" })}
-            />
-            <Form.Control.Feedback type="invalid">
-              {errors.body?.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Author:</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Author"
-              {...register("author")}
-            />
-          </Form.Group>
+          <TextInputField
+            name="title"
+            label="Destination name:"
+            type="text"
+            placeholder="Destination name"
+            autofocus
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.title}
+          />
+          <TextInputField
+            name="body"
+            label="Your experience there:"
+            as="textarea"
+            rows={5}
+            placeholder="Your experience"
+            register={register}
+            registerOptions={{ required: "Required" }}
+            error={errors.body}
+          />
+          <TextInputField
+            name="author"
+            label="Author:"
+            type="text"
+            placeholder="Author"
+            register={register}
+          />
         </Form>
       </Modal.Body>
       <Modal.Footer className={styleUtils.flexCenter}>

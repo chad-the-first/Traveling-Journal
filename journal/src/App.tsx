@@ -1,116 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { Trip, Trip as TripModel } from "./models/trip";
-import Trips from "./components/Trips";
-import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
 import styles from "./styles/TripsPage.module.css";
-import stylesUtils from "./styles/utils.module.css";
+import NavBar from "./components/NavBar";
+import LoginModal from "./components/LoginModal";
+import SignupModal from "./components/SignupModal";
+import { User } from "./models/user";
 import * as TripsApi from "./network/trips_api";
-import AddEditTripDialog from "./components/AddEditTripDialog";
-import { FaPlus } from "react-icons/fa";
+import TripsPageLoggedIn from "./components/TripsPageLoggedIn";
+import TripsPageLoggedOut from "./components/TripsPageLoggedOut";
 
 function App() {
-  const [trips, setTrips] = useState<TripModel[]>([]);
-  const [showAddTripDialog, setShowAddTripDialog] = useState(false);
-  const [tripToEdit, setTripToEdit] = useState<TripModel | null>(null);
-  const [tripsLoading, setTripsLoading] = useState(true);
-  const [showTripsLoadingError, setShowTripsLoadingError] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [showLoginModal, setShowLoginpModal] = useState(false);
 
   useEffect(() => {
-    async function loadTrips() {
+    async function fetchLoggedInUser() {
       try {
-        setShowTripsLoadingError(false);
-        setTripsLoading(true);
-        const trips = await TripsApi.fetchTrips();
-        setTrips(trips);
+        const user = await TripsApi.getLoggedInUser();
+        setLoggedInUser(user);
       } catch (error) {
         console.error(error);
-        setShowTripsLoadingError(true);
-      } finally {
-        setTripsLoading(false);
       }
     }
-    loadTrips();
+    fetchLoggedInUser();
   }, []);
-
-  async function deleteTrip(trip: Trip) {
-    try {
-      await TripsApi.deleteTrip(trip._id);
-      setTrips(trips.filter((existingTrip) => existingTrip._id !== trip._id));
-      setTripToEdit(null);
-    } catch (error) {
-      console.error(error);
-      alert(error);
-    }
-  }
-
-  const tripsGrid = (
-    <Row xs={1} md={2} lg={4} className={`g-4 ${styles.tripGrid}`}>
-      {trips.map((trip) => (
-        <Col key={trip._id}>
-          <Trips
-            trip={trip}
-            className={styles.trip}
-            onTripClicked={(trip) => setTripToEdit(trip)}
-          />
-        </Col>
-      ))}
-    </Row>
-  );
 
   return (
     <>
+      <NavBar
+        loggedInUser={loggedInUser}
+        SignupClicked={() => setShowSignupModal(true)}
+        LoginClicked={() => setShowLoginpModal(true)}
+        LogoutClicked={() => setLoggedInUser(null)}
+      />
       <Container className={styles.tripsPage}>
-        <Button
-          className={`mt-4 mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
-          onClick={() => setShowAddTripDialog(true)}
-        >
-          <FaPlus />
-          Add a destination
-        </Button>
-
-        {tripsLoading && <Spinner animation="border" variant="primary" />}
-        {showTripsLoadingError && (
-          <p>Something went wrong. Please refresh the page.</p>
-        )}
-
-        {!tripsLoading && !showTripsLoadingError && (
-          <>
-            {trips.length > 0 ? (
-              tripsGrid
-            ) : (
-              <p>You have no destinations yet.</p>
-            )}
-          </>
-        )}
-
-        {showAddTripDialog && (
-          <AddEditTripDialog
-            onDismiss={() => setShowAddTripDialog(false)}
-            onDeleteTripClicked={deleteTrip}
-            onTripSubmited={(newTrip) => {
-              setTrips([...trips, newTrip]);
-              setShowAddTripDialog(false);
-            }}
-          />
-        )}
-        {tripToEdit && (
-          <AddEditTripDialog
-            onDismiss={() => setTripToEdit(null)}
-            onDeleteTripClicked={deleteTrip}
-            tripToEdit={tripToEdit}
-            onTripSubmited={(updatedTrip) => {
-              setTrips(
-                trips.map((existingTrip) =>
-                  existingTrip._id === updatedTrip._id
-                    ? updatedTrip
-                    : existingTrip
-                )
-              );
-              setTripToEdit(null);
-            }}
-          />
-        )}
+        <>{loggedInUser ? <TripsPageLoggedIn /> : <TripsPageLoggedOut />}</>
       </Container>
+      {showSignupModal && (
+        <SignupModal
+          onDismiss={() => setShowSignupModal(false)}
+          onSignup={(user) => {
+            setLoggedInUser(user);
+            setShowSignupModal(false);
+          }}
+        />
+      )}
+      {showLoginModal && (
+        <LoginModal
+          onDismiss={() => setShowLoginpModal(false)}
+          onLogin={(user) => {
+            setLoggedInUser(user);
+            setShowLoginpModal(false);
+          }}
+        />
+      )}
     </>
   );
 }

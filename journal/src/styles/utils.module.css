@@ -19,3 +19,7 @@
   cursor: pointer;
   opacity: 0.7;
 }
+
+.width100 {
+  width: 100%;
+}

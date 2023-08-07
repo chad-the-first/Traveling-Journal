@@ -1,4 +1,5 @@
 import { Trip } from "../models/trip";
+import { User } from "../models/user";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
     const res = await fetch(input, init);
@@ -9,6 +10,31 @@ async function fetchData(input: RequestInfo, init?: RequestInit) {
         const errorMessage = errorBody.error;
         throw Error(errorMessage);
     }
+}
+
+export async function getLoggedInUser(): Promise<User> {
+    const res = await fetchData("/api/users", { method: "GET" });
+    return await res.json();
+}
+
+export interface SignupCredentials {
+    username: string,
+    email?: string,
+    password: string
+}
+
+export async function signUp(credentials: SignupCredentials): Promise<User> {
+    const res = await fetchData("/api/users/signup", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(credentials)})
+    return await res.json();
+}
+
+export async function logIn(credentials: SignupCredentials): Promise<User> {
+    const res = await fetchData("/api/users/login", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(credentials)});
+    return await res.json();
+}
+
+export async function logOut() {
+    await fetchData("/api/users/logout", { method: "POST" });
 }
 
 export async function fetchTrips(): Promise<Trip[]> {
