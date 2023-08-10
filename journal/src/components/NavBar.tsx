@@ -4,6 +4,7 @@ import { User } from "../models/user";
 import { Nav } from "react-bootstrap";
 import NavLoggedIn from "./NavLoggedIn";
 import NavLoggedOut from "./NavLoggedOut";
+import { Link } from "react-router-dom";
 
 interface props {
   loggedInUser: User | null;
@@ -21,7 +22,9 @@ const NavBar = ({
   return (
     <Navbar bg="primary" variant="dark" expand="sm" sticky="top">
       <Container>
-        <Navbar.Brand>Istanbuly</Navbar.Brand>
+        <Navbar.Brand as={Link} to="/">
+          Istanbuly
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
           <Nav className="ms-auto">

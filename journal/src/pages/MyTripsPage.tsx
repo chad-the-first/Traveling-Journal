@@ -3,12 +3,17 @@ import { Button, Col, Row, Spinner } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { Trip, Trip as TripModel } from "../models/trip";
 import * as TripsApi from "../network/trips_api";
-import AddEditTripDialog from "./AddEditTripDialog";
-import Trips from "./Trips";
+import AddEditTripDialog from "../components/AddEditTripDialog";
+import Trips from "../components/Trips";
 import styles from "../styles/TripsPage.module.css";
 import stylesUtils from "../styles/utils.module.css";
+import { User } from "../models/user";
 
-const TripsPageLoggedIn = () => {
+interface props {
+  loggedInUser: User | null;
+}
+
+const MyTripsPage = ({ loggedInUser }: props) => {
   const [trips, setTrips] = useState<TripModel[]>([]);
   const [showAddTripDialog, setShowAddTripDialog] = useState(false);
   const [tripToEdit, setTripToEdit] = useState<TripModel | null>(null);
@@ -20,7 +25,7 @@ const TripsPageLoggedIn = () => {
       try {
         setShowTripsLoadingError(false);
         setTripsLoading(true);
-        const trips = await TripsApi.fetchTrips();
+        const trips = await TripsApi.fetchMyTrips();
         setTrips(trips);
       } catch (error) {
         console.error(error);
@@ -50,7 +55,8 @@ const TripsPageLoggedIn = () => {
           <Trips
             trip={trip}
             className={styles.trip}
-            onTripClicked={(trip) => setTripToEdit(trip)}
+            editTripClicked={(trip) => setTripToEdit(trip)}
+            loggedIn={loggedInUser}
           />
         </Col>
       ))}
@@ -59,13 +65,15 @@ const TripsPageLoggedIn = () => {
 
   return (
     <>
-      <Button
-        className={`mt-4 mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
-        onClick={() => setShowAddTripDialog(true)}
-      >
-        <FaPlus />
-        Add a destination
-      </Button>
+      {loggedInUser && (
+        <Button
+          className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
+          onClick={() => setShowAddTripDialog(true)}
+        >
+          <FaPlus />
+          Add a destination
+        </Button>
+      )}
 
       {tripsLoading && <Spinner animation="border" variant="primary" />}
       {showTripsLoadingError && (
@@ -109,4 +117,4 @@ const TripsPageLoggedIn = () => {
   );
 };
 
-export default TripsPageLoggedIn;
+export default MyTripsPage;

@@ -1,16 +1,19 @@
 import express from "express";
 import * as TripsController from "../controllers/trips";
+import { requiresAuth, requiresAuthForUpdate } from "../middleware/auth";
 
 const router = express.Router();
 
 router.get("/", TripsController.getTrips);
 
+router.get("/my-trips/", requiresAuth, TripsController.getMyTrips);
+
 router.get("/:tripId", TripsController.getTrip);
 
-router.post("/", TripsController.createTrip);
+router.post("/", requiresAuth, TripsController.createTrip);
 
-router.patch("/:tripId", TripsController.updateTrip);
+router.patch("/:tripId", requiresAuthForUpdate, TripsController.updateTrip);
 
-router.delete("/:tripId", TripsController.deleteTrip);
+router.delete("/:tripId", requiresAuth, TripsController.deleteTrip);
 
 export default router;

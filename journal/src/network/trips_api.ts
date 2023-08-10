@@ -1,5 +1,9 @@
 import { Trip } from "../models/trip";
 import { User } from "../models/user";
+import axios from "axios";
+
+axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.headers.post['Content-Type'] = "application/json";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
     const res = await fetch(input, init);
@@ -38,10 +42,28 @@ export async function logOut() {
 }
 
 export async function fetchTrips(): Promise<Trip[]> {
-    const res = await fetchData("/api/trips", {
+    const res = await axios({
+        url: "/api/trips", 
         method: "GET"
       });
-      return await res.json();
+      return res.data;
+}
+
+export async function fetchOneTrip(tripId: string): Promise<Trip> {
+    const res = await axios({
+        url: "http://localhost:5000/api/trips/" + tripId, 
+        method: "GET"
+      });
+      return await res.data;
+}
+
+export async function fetchMyTrips(): Promise<Trip[]> {
+    const res = await axios({
+        url: "http://localhost:5000/api/trips/my-trips", 
+        withCredentials: true,
+        method: "GET"
+      });
+      return await res.data;
 }
 
 export interface TripInput {

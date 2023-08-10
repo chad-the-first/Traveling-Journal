@@ -1,15 +1,20 @@
 import styles from "../styles/Trip.module.css";
+import stylesUtils from "../styles/utils.module.css";
 import { Card } from "react-bootstrap";
 import { Trip as TripModel } from "../models/trip";
 import { formatDate } from "../utils/formatDate";
+import { Link } from "react-router-dom";
+import { FiEdit } from "react-icons/fi";
+import { User } from "../models/user";
 
 interface props {
   trip: TripModel;
-  onTripClicked: (trip: TripModel) => void;
   className?: string;
+  editTripClicked: (trip: TripModel) => void;
+  loggedIn: User | null;
 }
 
-const Trips = ({ onTripClicked, trip, className }: props) => {
+const Trips = ({ trip, className, editTripClicked, loggedIn }: props) => {
   const { title, body, author, meta, createdAt, updatedAt } = trip;
 
   let createdUpdatedText: string;
@@ -21,12 +26,24 @@ const Trips = ({ onTripClicked, trip, className }: props) => {
 
   return (
     <Card
+      as={Link}
       className={`${styles.tripCard} ${className}`}
-      onClick={() => onTripClicked(trip)}
+      to={"/" + trip._id}
     >
       <Card.Img variant="top" src="https://placehold.co/400x200" />
       <Card.Body className={styles.cardBody}>
-        <Card.Title>{title}</Card.Title>
+        <Card.Title className={stylesUtils.flexCenter}>
+          {title}
+          {loggedIn && (
+            <FiEdit
+              className="text-muted ms-auto"
+              onClick={(e) => {
+                editTripClicked(trip);
+                e.preventDefault();
+              }}
+            />
+          )}
+        </Card.Title>
         <Card.Text className={styles.cardText}>{body}</Card.Text>
       </Card.Body>
       <Card.Footer>

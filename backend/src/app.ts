@@ -1,4 +1,5 @@
 import "dotenv/config";
+import cors from "cors";
 import express, { NextFunction, Request, Response } from "express";
 import tripsRoutes from "./routes/trips";
 import userRoutes from "./routes/users";
@@ -9,6 +10,8 @@ import env from "./util/validateEnve";
 import MongoStore from "connect-mongo";
 
 const app = express();
+
+app.use(cors({credentials: true, origin: true}));
 
 app.use(morgan('dev'));
 
