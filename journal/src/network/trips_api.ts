@@ -5,20 +5,13 @@ import axios from "axios";
 axios.defaults.baseURL = 'http://localhost:5000';
 axios.defaults.headers.post['Content-Type'] = "application/json";
 
-async function fetchData(input: RequestInfo, init?: RequestInit) {
-    const res = await fetch(input, init);
-    if (res.ok) {
-        return res
-    } else {
-        const errorBody = await res.json();
-        const errorMessage = errorBody.error;
-        throw Error(errorMessage);
-    }
-}
 
 export async function getLoggedInUser(): Promise<User> {
-    const res = await fetchData("/api/users", { method: "GET" });
-    return await res.json();
+    const res = await axios({
+        url: "/api/users",
+        method: "GET" 
+    });
+    return res.data;
 }
 
 export interface SignupCredentials {
@@ -28,17 +21,28 @@ export interface SignupCredentials {
 }
 
 export async function signUp(credentials: SignupCredentials): Promise<User> {
-    const res = await fetchData("/api/users/signup", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(credentials)})
-    return await res.json();
+    const res = await axios({
+        url: "/api/users/signup", 
+        method: "POST", 
+        data: JSON.stringify(credentials)
+    })
+    return res.data;
 }
 
 export async function logIn(credentials: SignupCredentials): Promise<User> {
-    const res = await fetchData("/api/users/login", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(credentials)});
-    return await res.json();
+    const res = await axios({
+        url: "/api/users/login", 
+        method: "POST", 
+        data: JSON.stringify(credentials)
+    });
+    return res.data;
 }
 
 export async function logOut() {
-    await fetchData("/api/users/logout", { method: "POST" });
+    await axios({
+        url: "/api/users/logout", 
+        method: "POST" 
+    });
 }
 
 export async function fetchTrips(): Promise<Trip[]> {
@@ -54,7 +58,7 @@ export async function fetchOneTrip(tripId: string): Promise<Trip> {
         url: "http://localhost:5000/api/trips/" + tripId, 
         method: "GET"
       });
-      return await res.data;
+      return res.data;
 }
 
 export async function fetchMyTrips(): Promise<Trip[]> {
@@ -63,7 +67,7 @@ export async function fetchMyTrips(): Promise<Trip[]> {
         withCredentials: true,
         method: "GET"
       });
-      return await res.data;
+      return res.data;
 }
 
 export interface TripInput {
@@ -73,15 +77,26 @@ export interface TripInput {
 } 
 
 export async function createTrip(trip: TripInput): Promise<Trip> {
-    const res = await fetchData("/api/trips", { method: "POST", headers: { "Content-Type": "application/json"}, body: JSON.stringify(trip) });
-    return res.json();
+    const res = await axios({
+        url: "/api/trips", 
+        method: "POST", 
+        data: JSON.stringify(trip) 
+    });
+    return res.data;
 }
 
 export async function updateTrip(tripId: string, trip: TripInput): Promise<Trip> {
-    const updatedTrip = await fetchData("/api/trips/" + tripId, { method: "PATCH", headers: { "Content-Type": "application/json"}, body: JSON.stringify(trip) })
-    return updatedTrip.json();
+    const updatedTrip = await axios({
+        url: "/api/trips/" + tripId, 
+        method: "PATCH", 
+        data: JSON.stringify(trip) 
+    });
+    return updatedTrip.data;
 }
 
 export async function deleteTrip(tripId: string) {
-    await fetchData("/api/trips/" + tripId, { method: "DELETE"});
+    await axios({
+        url: "/api/trips/" + tripId, 
+        method: "DELETE"
+    });
 }
