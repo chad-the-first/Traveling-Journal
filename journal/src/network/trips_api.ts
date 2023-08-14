@@ -4,6 +4,7 @@ import axios from "axios";
 
 axios.defaults.baseURL = 'https://traveling-journal-backend.onrender.com';
 axios.defaults.headers.post['Content-Type'] = "application/json";
+axios.defaults.withCredentials = true;
 
 
 export async function getLoggedInUser(): Promise<User> {
@@ -25,7 +26,6 @@ export async function signUp(credentials: SignupCredentials): Promise<User> {
         url: "/api/users/signup", 
         method: "POST", 
         data: JSON.stringify(credentials),
-        withCredentials: true,
     })
     return res.data;
 }
@@ -35,7 +35,6 @@ export async function logIn(credentials: SignupCredentials): Promise<User> {
         url: "/api/users/login", 
         method: "POST",
         data: JSON.stringify(credentials),
-        withCredentials: true,
     });
     return res.data;
 }
@@ -66,7 +65,6 @@ export async function fetchOneTrip(tripId: string): Promise<Trip> {
 export async function fetchMyTrips(): Promise<Trip[]> {
     const res = await axios({
         url: "/api/trips/my-trips", 
-        withCredentials: true,
         method: "GET"
       });
       return res.data;
@@ -83,7 +81,6 @@ export async function createTrip(trip: TripInput): Promise<Trip> {
         url: "/api/trips", 
         method: "POST", 
         data: JSON.stringify(trip),
-        withCredentials: true,
     });
     return res.data;
 }
@@ -93,7 +90,6 @@ export async function updateTrip(tripId: string, trip: TripInput): Promise<Trip>
         url: "/api/trips/" + tripId, 
         method: "PATCH", 
         data: JSON.stringify(trip),
-        withCredentials: true,
     });
     return updatedTrip.data;
 }
@@ -101,7 +97,6 @@ export async function updateTrip(tripId: string, trip: TripInput): Promise<Trip>
 export async function deleteTrip(tripId: string) {
     await axios({
         url: "/api/trips/" + tripId,
-        withCredentials: true,
         method: "DELETE"
     });
 }
