@@ -24,8 +24,8 @@ export async function signUp(credentials: SignupCredentials): Promise<User> {
     const res = await axios({
         url: "/api/users/signup", 
         method: "POST", 
+        data: JSON.stringify(credentials),
         withCredentials: true,
-        data: JSON.stringify(credentials)
     })
     return res.data;
 }
@@ -34,8 +34,8 @@ export async function logIn(credentials: SignupCredentials): Promise<User> {
     const res = await axios({
         url: "/api/users/login", 
         method: "POST",
+        data: JSON.stringify(credentials),
         withCredentials: true,
-        data: JSON.stringify(credentials)
     });
     return res.data;
 }
@@ -82,8 +82,8 @@ export async function createTrip(trip: TripInput): Promise<Trip> {
     const res = await axios({
         url: "/api/trips", 
         method: "POST", 
+        data: JSON.stringify(trip),
         withCredentials: true,
-        data: JSON.stringify(trip) 
     });
     return res.data;
 }
@@ -92,8 +92,8 @@ export async function updateTrip(tripId: string, trip: TripInput): Promise<Trip>
     const updatedTrip = await axios({
         url: "/api/trips/" + tripId, 
         method: "PATCH", 
+        data: JSON.stringify(trip),
         withCredentials: true,
-        data: JSON.stringify(trip) 
     });
     return updatedTrip.data;
 }
