@@ -17,6 +17,7 @@ export const getTrips: RequestHandler =  async (req, res, next) => {
 
 export const getMyTrips: RequestHandler =  async (req, res, next) => {
     const userId = req.session.userId;
+    console.log(req.session);
 
     try {
         assertIsDefined(userId); 

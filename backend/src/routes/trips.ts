@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", TripsController.getTrips);
 
 // add requireAuth later and see what's the issue, its something that has to do with using axios instead of regular fetch
-router.get("/my-trips/", TripsController.getMyTrips);
+router.get("/my-trips/", requiresAuth, TripsController.getMyTrips);
 
 router.get("/:tripId", TripsController.getTrip);
 
