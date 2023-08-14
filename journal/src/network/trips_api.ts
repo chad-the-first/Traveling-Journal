@@ -57,7 +57,7 @@ export async function fetchTrips(): Promise<Trip[]> {
 
 export async function fetchOneTrip(tripId: string): Promise<Trip> {
     const res = await axios({
-        url: "http://localhost:5000/api/trips/" + tripId, 
+        url: "/api/trips/" + tripId, 
         method: "GET"
       });
       return res.data;
@@ -65,7 +65,7 @@ export async function fetchOneTrip(tripId: string): Promise<Trip> {
 
 export async function fetchMyTrips(): Promise<Trip[]> {
     const res = await axios({
-        url: "http://localhost:5000/api/trips/my-trips", 
+        url: "/api/trips/my-trips", 
         withCredentials: true,
         method: "GET"
       });
