@@ -25,8 +25,10 @@ app.use(session({
         sameSite: "none",
         secure: true,
         maxAge: 60 * 60 * 1000,
+        path: "/",
     },
     rolling: true,
+    proxy: true,
     store: MongoStore.create({
         mongoUrl: env.MONGODB_URI
     })
