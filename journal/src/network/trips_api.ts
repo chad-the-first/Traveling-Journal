@@ -2,7 +2,7 @@ import { Trip } from "../models/trip";
 import { User } from "../models/user";
 import axios from "axios";
 
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = 'https://traveling-journal-backend.onrender.com';
 axios.defaults.headers.post['Content-Type'] = "application/json";
 
 
