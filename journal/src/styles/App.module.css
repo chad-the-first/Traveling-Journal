@@ -1,3 +1,8 @@
 .pageContainer {
   padding: 32px 0;
 }
+
+.navBg {
+  background-image: url("../assets/squared-notebook-pages.jpg");
+  background-size: 100%;
+}

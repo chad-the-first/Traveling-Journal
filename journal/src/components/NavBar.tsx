@@ -5,6 +5,7 @@ import { Nav } from "react-bootstrap";
 import NavLoggedIn from "./NavLoggedIn";
 import NavLoggedOut from "./NavLoggedOut";
 import { Link } from "react-router-dom";
+import styles from "../styles/App.module.css";
 
 interface props {
   loggedInUser: User | null;
@@ -20,7 +21,13 @@ const NavBar = ({
   LogoutClicked,
 }: props) => {
   return (
-    <Navbar bg="primary" variant="dark" expand="sm" sticky="top">
+    <Navbar
+      className={styles.navBg}
+      bg="primary"
+      variant="dark"
+      expand="sm"
+      sticky="top"
+    >
       <Container>
         <Navbar.Brand as={Link} to="/">
           Istanbuly

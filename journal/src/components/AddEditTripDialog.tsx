@@ -26,8 +26,11 @@ const AddEditTripDialog = ({
     formState: { errors, isSubmitting },
   } = useForm<TripInput>({
     defaultValues: {
+      image: tripToEdit?.image || "",
       title: tripToEdit?.title || "",
       body: tripToEdit?.body || "",
+      route: tripToEdit?.route || "",
+      location: tripToEdit?.location || "",
       author: tripToEdit?.author || "",
     },
   });
@@ -35,8 +38,14 @@ const AddEditTripDialog = ({
   async function onSubmit(input: TripInput) {
     try {
       if (tripToEdit) {
-        const res = await TripsApi.updateTrip(tripToEdit._id, input);
-        onTripSubmited(res);
+        if (typeof input.image != "string") {
+          const res = await TripsApi.createTrip(input);
+          await TripsApi.deleteTrip(tripToEdit._id);
+          onTripSubmited(res);
+        } else {
+          const res = await TripsApi.updateTrip(tripToEdit._id, input);
+          onTripSubmited(res);
+        }
       } else {
         const res = await TripsApi.createTrip(input);
         onTripSubmited(res);
@@ -57,18 +66,26 @@ const AddEditTripDialog = ({
       <Modal.Body>
         <Form id="addTripForm" onSubmit={handleSubmit(onSubmit)}>
           <TextInputField
+            name="image"
+            label="Choose a Picture"
+            type="file"
+            accept="image/*"
+            register={register}
+            error={errors.image}
+          />
+          <TextInputField
             name="title"
             label="Destination name:"
             type="text"
             placeholder="Destination name"
-            autofocus
+            autoFocus
             register={register}
             registerOptions={{ required: "Required" }}
             error={errors.title}
           />
           <TextInputField
             name="body"
-            label="Your experience there:"
+            label="What do I like About it:"
             as="textarea"
             rows={5}
             placeholder="Your experience"
@@ -77,12 +94,28 @@ const AddEditTripDialog = ({
             error={errors.body}
           />
           <TextInputField
-            name="author"
-            label="Author:"
+            name="location"
+            label="Address link"
             type="text"
-            placeholder="Author"
+            placeholder="Link from google maps"
             register={register}
+            error={errors.location}
           />
+          <TextInputField
+            name="route"
+            label="How to get there:"
+            type="text"
+            placeholder="what's the easiest way to get there?"
+            register={register}
+            error={errors.route}
+          />
+          <Form.Group className="mb-3" controlId={"author-input"}>
+            <Form.Check
+              label="Submit anonymously"
+              type="checkbox"
+              {...register("author")}
+            />
+          </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer className={styleUtils.flexCenter}>
@@ -99,7 +132,8 @@ const AddEditTripDialog = ({
         <Button
           type="submit"
           form="addTripForm"
-          variant="primary"
+          variant="light"
+          className={styleUtils.redButton}
           disabled={isSubmitting}
         >
           Submit

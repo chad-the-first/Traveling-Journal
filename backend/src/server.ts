@@ -2,7 +2,6 @@ import app from "./app";
 import env from "./util/validateEnve";
 import mongoose from "mongoose";
 
-
 const port = env.PORT;
 
 mongoose.connect(env.MONGODB_URI)

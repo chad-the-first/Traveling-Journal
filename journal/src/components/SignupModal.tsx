@@ -67,7 +67,8 @@ const SignupModal = ({ onDismiss, onSignup }: props) => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className={stylesUtils.width100}
+            variant="light"
+            className={`${stylesUtils.width100} ${stylesUtils.redButton}`}
           >
             Sign Up
           </Button>

@@ -1,8 +1,11 @@
 import { RequestHandler } from "express";
 import TripModel from "../models/trip";
+import UserModel from "../models/user";
 import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { assertIsDefined } from "../util/assertIsDefined";
+import { Cloudinary } from "../config/cloudinary.config";
+
 
 export const getTrips: RequestHandler =  async (req, res, next) => {
 
@@ -17,7 +20,6 @@ export const getTrips: RequestHandler =  async (req, res, next) => {
 
 export const getMyTrips: RequestHandler =  async (req, res, next) => {
     const userId = req.session.userId;
-    console.log(req.session);
 
     try {
         assertIsDefined(userId); 
@@ -56,24 +58,34 @@ interface UpdateTripParams {
 }
 
 interface UpdateTripBody {
+    image?: string,
     title?: string,
     body?: string,
+    location?: string,
+    route?: string,
     author?: string
 }
 
 
 interface createTripBody {
+    image: string,
+    image_Id: string,
     title: string,
     body: string,
+    location?: string,
+    route?: string,
     author?: string,
     votes: number,
     favs: number, 
 }
 
 export const createTrip: RequestHandler<unknown, unknown, createTripBody, unknown> = async (req, res, next) => {
+
     const title = req.body.title;
     const body = req.body.body;
-    const author = req.body.author;
+    let author = req.body.author;
+    const location = req.body.location;
+    const route = req.body.route;
     const votes = 0;
     const favs = 0;
     const userId = req.session.userId;
@@ -85,20 +97,56 @@ export const createTrip: RequestHandler<unknown, unknown, createTripBody, unknow
         if (!title || !body) {
             throw createHttpError(400, "The trip must have a title and a body")
         }
+        if (!author) {
+            const username = await UserModel.findById(req.session.userId);
+            author = username?.username;
+        } else {
+            author = "Anonymous";
+        }
+        // checking avatar/files
+        if(req.files && typeof req.files.length == "number" && req.files.length > 0){
+            const files= req.files as Express.Multer.File[]
+            // use cloudinary.uploader.upload() to upload image in cloudinary
+            const result = await Cloudinary.uploader.upload(files[0].path, {
+                width: 1280, // setting width to 200px
+                height: 720, // setting height to 200px
+                crop: "thumb", // create thumbnail image
+                // gravity: "face", // focusing on face
+                folder: "trips avatar",
+            });
+    
 
-        const newTrip = await TripModel.create({
-            userId: userId,
-            title: title,
-            body: body,
-            author: author,
-            meta: {
-                votes: votes,
-                favs: favs,
-            }
-        });
-
-        res.status(201).json(newTrip);
-        
+            const newTrip = await TripModel.create({
+                userId: userId,
+                image: result.secure_url,
+                image_Id: result.public_id,
+                title: title,
+                body: body,
+                author: author,
+                location: location,
+                route: route,
+                meta: {
+                    votes: votes,
+                    favs: favs,
+                }
+            });
+            res.status(201).json(newTrip);
+        } else {
+            const newTrip = await TripModel.create({
+                userId: userId,
+                title: title,
+                body: body,
+                author: author,
+                location: location,
+                route: route,
+                meta: {
+                    votes: votes,
+                    favs: favs,
+                }
+            });
+            res.status(201).json(newTrip);
+        }
+         
     } catch (error) {
         next(error);
     }
@@ -106,10 +154,13 @@ export const createTrip: RequestHandler<unknown, unknown, createTripBody, unknow
 
     export const updateTrip: RequestHandler<UpdateTripParams, unknown, UpdateTripBody, unknown> = async (req, res ,next) => {
         const tripId = req.params.tripId;
+        const userId = req.session.userId;
+
         const newTitle = req.body.title;
         const newBody = req.body.body;
         const newAuthor = req.body.author;
-        const userId = req.session.userId;
+        const newLocation = req.body.location;
+        const newRoute = req.body.route;
 
         
         try {
@@ -132,10 +183,12 @@ export const createTrip: RequestHandler<unknown, unknown, createTripBody, unknow
             if(!trip.userId.equals(userId)) {
                 throw createHttpError(401, " You naughty naughty, your don't have access to this note.");
             }
-    
+
             trip.title = newTitle;
             trip.body = newBody;
             trip.author = newAuthor;
+            trip.location = newLocation;
+            trip.route = newRoute;
     
             const updatedTrip = await trip.save();
             res.status(200).json(updatedTrip);
@@ -163,6 +216,9 @@ export const deleteTrip: RequestHandler = async (req, res, next) => {
         }
         if(!trip.userId.equals(userId)) {
             throw createHttpError(401, " You naughty naughty, your don't have access to this note.");
+        }
+        if(trip.image && trip.image_Id) {
+            await Cloudinary.uploader.destroy(trip.image_Id);
         }
 
         await trip.deleteOne();

@@ -58,7 +58,8 @@ const LoginModal = ({ onDismiss, onLogin }: props) => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className={stylesUtils.width100}
+            variant="light"
+            className={`${stylesUtils.width100} ${stylesUtils.redButton}`}
           >
             Login
           </Button>

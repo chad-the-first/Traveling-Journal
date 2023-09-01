@@ -67,7 +67,8 @@ const MyTripsPage = ({ loggedInUser }: props) => {
     <>
       {loggedInUser && (
         <Button
-          className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter}`}
+          variant="light"
+          className={`mb-4 ${stylesUtils.blockCenter} ${stylesUtils.flexCenter} ${stylesUtils.redButton}`}
           onClick={() => setShowAddTripDialog(true)}
         >
           <FaPlus />

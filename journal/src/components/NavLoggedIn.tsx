@@ -24,12 +24,14 @@ const NavLoggedIn = ({ User, onLogout }: props) => {
       <Navbar.Text className="me-2 mt-2">
         Signed in as: {User.username}
       </Navbar.Text>
-      <Button>
-        <Nav.Link as={Link} to="/my-trips">
+      <Button variant="light" className="me-2">
+        <Nav.Link style={{ color: "black" }} as={Link} to="/my-trips">
           My Trips
         </Nav.Link>
       </Button>
-      <Button onClick={logout}>Log out</Button>
+      <Button variant="danger" onClick={logout}>
+        Log out
+      </Button>
     </>
   );
 };

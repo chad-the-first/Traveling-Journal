@@ -9,7 +9,17 @@ interface props {
 }
 
 const TripOnShow = ({ tripOnShow }: props) => {
-  const { title, body, author, meta, createdAt, updatedAt } = tripOnShow;
+  const {
+    image,
+    title,
+    body,
+    location,
+    route,
+    author,
+    meta,
+    createdAt,
+    updatedAt,
+  } = tripOnShow;
 
   let createdUpdatedText: string;
   if (updatedAt > createdAt) {
@@ -19,10 +29,19 @@ const TripOnShow = ({ tripOnShow }: props) => {
   }
   return (
     <Card>
-      <Card.Img variant="top" src="https://placehold.co/400x200" />
+      <Card.Img
+        variant="top"
+        src={image ? image : "https://placehold.co/400x200"}
+      />
       <Card.Body className={styles.cardBody}>
         <Card.Title className={stylesUtils.flexCenter}>{title}</Card.Title>
         <Card.Text className={styles.cardText}>{body}</Card.Text>
+        {location && (
+          <Card.Link href={location} target="_blank">
+            Location on maps
+          </Card.Link>
+        )}
+        <Card.Text>{route}</Card.Text>
       </Card.Body>
       <Card.Footer>
         <small className="text-muted float-start">by: {author} </small>

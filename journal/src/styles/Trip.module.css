@@ -1,5 +1,7 @@
 .tripCard {
-  background-color: mediumaquamarine;
+  background-color: #c41e3a;
+  color: white;
+  text-decoration: none;
 }
 
 .cardBody {
@@ -9,4 +11,14 @@
 
 .cardText {
   white-space: pre-line;
+}
+
+.cardImage {
+  width: 100%;
+  height: 13vw;
+  object-fit: cover;
+}
+
+.whiteIcon {
+  color: white;
 }

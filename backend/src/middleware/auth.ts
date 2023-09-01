@@ -15,10 +15,8 @@ export const requiresAuthForUpdate: RequestHandler<UpdateTripParams, unknown, un
 
 export const requiresAuth: RequestHandler = (req, res, next) => {
     if(req.session.userId) {
-        console.log(req.session);
         next();
     } else {
-        console.log(req.session);
         next(createHttpError(401, "User not authenticated"));
     }
 }

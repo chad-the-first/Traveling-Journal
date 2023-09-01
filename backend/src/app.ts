@@ -16,6 +16,7 @@ app.use(cors({credentials: true, origin: true}));
 app.use(morgan('dev'));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
     secret: env.SESSION_SECRET,

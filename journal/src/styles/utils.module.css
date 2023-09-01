@@ -23,3 +23,8 @@
 .width100 {
   width: 100%;
 }
+
+.redButton {
+  background-color: #c41e3a;
+  color: white;
+}

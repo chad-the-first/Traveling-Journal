@@ -15,7 +15,7 @@ interface props {
 }
 
 const Trips = ({ trip, className, editTripClicked, loggedIn }: props) => {
-  const { title, body, author, meta, createdAt, updatedAt } = trip;
+  const { image, title, body, author, meta, createdAt, updatedAt } = trip;
 
   let createdUpdatedText: string;
   if (updatedAt > createdAt) {
@@ -30,13 +30,17 @@ const Trips = ({ trip, className, editTripClicked, loggedIn }: props) => {
       className={`${styles.tripCard} ${className}`}
       to={"/" + trip._id}
     >
-      <Card.Img variant="top" src="https://placehold.co/400x200" />
+      <Card.Img
+        className={styles.cardImage}
+        variant="top"
+        src={image ? image : "https://placehold.co/400x200"}
+      />
       <Card.Body className={styles.cardBody}>
         <Card.Title className={stylesUtils.flexCenter}>
           {title}
           {loggedIn && (
             <FiEdit
-              className="text-muted ms-auto"
+              className={`ms-auto ${styles.whiteIcon}`}
               onClick={(e) => {
                 editTripClicked(trip);
                 e.preventDefault();
