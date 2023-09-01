@@ -30,8 +30,11 @@ const NavBar = ({
     >
       <Container>
         <Navbar.Brand as={Link} to="/">
-          Istanbuly
+          ~ Istanbuly ~
         </Navbar.Brand>
+        <p className="m-auto" style={{ color: "white" }}>
+          my personal guide to Istanbul
+        </p>
         <Navbar.Toggle aria-controls="main-navbar" />
         <Navbar.Collapse id="main-navbar">
           <Nav className="ms-auto">
