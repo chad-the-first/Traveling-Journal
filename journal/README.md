@@ -1,9 +1,9 @@
-# Balanced Life 
+# Istanbuly
 ## MERN App
 ![balanced life app preview](/journal/src/assets/Istanbuly.jpg "App preview")
 <hr>
 
-I spread my wings to learn and build this MERN stack App I called Balanced life. I've always struggled to have a balanced life and, if you're like me, you can use this app to keep a record of how you're spending your quality time. I use this app to visiualize what aspect of life I need to focus on.
+Since I moved to Istanbul every friend of mine who visits asks me where they should go and what they should do in the city, so I built this MERN stack app so my friends and I can add and share hidden gems of the city.
 
 ### Technologies I practised:
 <ul>
@@ -12,16 +12,17 @@ I spread my wings to learn and build this MERN stack App I called Balanced life.
   <li>Bootstrap</li>
   <li>Node + Express</li>
   <li>MongoDB + Mongoose</li>
+  <li>Cloudinary</li>
 </ul>
 
 ### Concepts I learned: 
 <ul>
-  <li>Creating and using Models</li>
-  <li>Password hashing</li>
+  <li>Connecting collections in DB</li>
   <li>Form validation</li>
+  <li>React Router</li>
+  <li>Uploading pictures to Cloudinary</li>
   <li>User Authentication</li>
-  <li>Creating and using REST API</li>
-  <li>UseState and UseEffect</li>
-  <li>Using Cors</li>
-  <li>Deploying a Node server</li>
+  <li>Using REST API more</li>
+  <li>React Hook Form</li>
+  <li>Deploying a MERN app</li>
 </ul>
